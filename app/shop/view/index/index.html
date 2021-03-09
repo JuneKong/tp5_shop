@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="__CSS__/base.css" />
+<link rel="stylesheet" type="text/css" href="__CSS__/jquery.dialog.css" />
+<link rel="stylesheet" href="__CSS__/index.css" />
+<title>移动办公自动化系统</title>
+</head>
+
+<body>
+<div id="container">
+  <div id="hd">
+    <div class="hd-wrap ue-clear">
+      <div class="top-light"></div>
+      <h1 class="logo"></h1>
+      <div class="login-info ue-clear">
+        <div class="welcome ue-clear"><span>欢迎您,</span><a href="javascript:;" class="user-name">{$Think.cookie.username}</a></div>
+        <div class="login-msg ue-clear"> <a href="" class="msg-txt" target="iframe">消息</a> <a href="" class="msg-num" target="iframe">0</a> </div>
+      </div>
+      <div class="toolbar ue-clear"> <a href="javascript:;" class="home-btn">首页</a> <a href="javascript:;" class="quit-btn exit"></a> </div>
+    </div>
+  </div>
+  <div id="bd">
+    <div class="wrap ue-clear">
+      <div class="sidebar">
+        <h2 class="sidebar-header">
+          <p>功能导航</p>
+        </h2>
+        <ul class="nav">
+          {volist name='menu' id='vo'}
+          {eq name='vo.parent_id' value='0'}
+          <li class="gongwen">
+            <div class="nav-header"><a href="javascript:;" class="ue-clear"><span>{$vo.rule_name}</span><i class="icon"></i></a></div>
+            <ul class="subnav">
+              {volist name='menu' id='vol'}
+              {eq name='vol.parent_id' value='$vo.id'}
+              <li><a href="javascript:;" date-src="{:url($vol.module_name.'/'.$vol.controller_name.'/'.$vol.action_name)}">{$vol.rule_name}</a></li>
+              {/eq}
+              {/volist}
+            </ul>
+          </li>
+          {/eq}
+          {/volist}
+        </ul>
+      </div>
+      <div class="content">
+        <!-- url('模块名/控制器名/方法名') -->
+        <iframe src="{:url('/shop/index/home')}" id="iframe" width="100%" height="100%" frameborder="0" name='iframe'></iframe>
+      </div>
+    </div>
+  </div>
+  <div id="ft" class="ue-clear">
+    <div class="ft-left"> <span>中国移动</span> <em>Office&nbsp;System</em> </div>
+    <div class="ft-right"> <span>Automation</span> <em>V2.0&nbsp;2014</em> </div>
+  </div>
+</div>
+<div class="exitDialog">
+  <div class="dialog-content">
+    <div class="ui-dialog-icon"></div>
+    <div class="ui-dialog-text">
+      <p class="dialog-content">你确定要退出系统？</p>
+      <p class="tips">如果是请点击“确定”，否则点“取消”</p>
+      <div class="buttons">
+        <input type="button" class="button long2 ok" value="确定" />
+        <input type="button" class="button long2 normal" value="取消" />
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__JS__/common.js"></script>
+<script type="text/javascript" src="__JS__/core.js"></script>
+<script type="text/javascript" src="__JS__/jquery.dialog.js"></script>
+<script type="text/javascript" src="__JS__/index.js"></script>
+<script type="text/javascript">
+//jQuery代码
+//通过ajax请求获得数据
+function getMegCount(){
+  $.get("/oa/email/getCount",function(data) {
+      $('.msg-num').html(data);
+    },
+  );
+}
+$(() => {
+  // setInterval(getMegCount, 5000);
+});
+</script>
+</html>

@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="__CSS__/base.css" />
+<link rel="stylesheet" href="__CSS__/info-reg.css" />
+<link rel="stylesheet" href="__CSS__/info-mgt.css" />
+<link rel="stylesheet" href="__CSS__/WdatePicker.css" />
+<title>商城后台</title>
+<style type='text/css'>
+	table tr .id{ width:63px; text-align: center; padding: 5px;}
+	table tr .name{ width:118px; padding-left:17px;}
+	table tr .nickname{ width:63px; padding-left:17px;}
+	table tr .dept_id{ width:63px; padding-left:13px;}
+	table tr .sex{ width:63px; padding-left:13px;}
+	table tr .birthday{ width:80px; padding-left:13px;}
+	table tr .tel{ width:113px; padding-left:13px;}
+	table tr .email{ width:160px; padding-left:13px;}
+	table tr .addtime{ width:160px; padding-left:13px;}
+	table tr .operate{ padding-left:13px;}
+</style>
+</head>
+
+<body>
+<div class="title"><h2>商品库存设置</h2></div>
+<form action="" method="post" enctype="multipart/form-data">
+<div class="table-box">
+	<table>
+    	<thead>
+        	<tr>
+				{volist name='attr' id='vol'}
+            	<th class="name">{$vol.0.attr_name}</th>
+				{/volist}
+				<th class="id">数量</th>
+                <th class="operate">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+				{volist name='kucun' id='vo' key='keys'}
+				<tr>
+				{volist name="attr" id="vol"}
+					<td class="name">
+						<select name="attr[{$vol.0.attr_id}][]">
+							{volist name='vol' id='v'}
+							<option value="{$v.id}" {in name='$v.id' value="$vo.goods_attr_ids"}selected='selected'{/in} >{$v.attr_values}</option>
+							{/volist}
+						</select>
+					</td>
+				{/volist}
+					<td class="id"><input type="number" name="goods_number[]" value="{$vo.goods_number}" /></td>
+					<td class="operate">
+						<input type="button" value="{eq name='keys' value='1'}+{else/}-{/eq}" onclick="addTR(this)" />
+					</td>
+				</tr>
+				{/volist}
+        </tbody>
+    </table>
+</div>
+<div class="btn ue-clear">
+	<a href="javascript:;" class="confirm" id='btnSubmit'>保存</a>
+	<input type="hidden" name='id' value="{$Request.param.id}">
+</div>
+</form>
+</body>
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__JS__/common.js"></script>
+<script type="text/javascript" src="__JS__/WdatePicker.js"></script>
+<script src="__LAYER__/layer.js"></script>
+<script type="text/javascript">
+$(".select-title").on("click",function(){
+	$(".select-list").hide();
+	$(this).siblings($(".select-list")).show();
+	return false;
+})
+$(".select-list").on("click","li",function(){
+	var txt = $(this).text();
+	$(this).parent($(".select-list")).siblings($(".select-title")).find("span").text(txt);
+})
+
+$("tbody").find("tr:odd").css("backgroundColor","#eff6fa");
+
+showRemind('input[type=text], textarea','placeholder');
+
+//点击查看
+$(() => {
+	$('#btnSubmit').on('click',function(){
+		$('form').submit();
+	});
+
+	$('.show').on('click', function(){
+		let id = $(this).attr('data-id');
+		let title = $(this).attr('data-title');
+		layer.open({
+			type: 2,
+			title: title,
+			shadeClose: true,
+			shade: 0.3,
+			area: ['500px', '90%'],
+			content: 'showContent/id/' + id  //iframe的url
+		});
+	});
+
+	$('.del').on('click', function(){
+		let id = '';
+		let len = 0;
+		if($(this).attr('data')){
+			id = $(this).attr('data');
+			len = 1;
+		}else{
+			let obj = $(':checkbox:checked');
+			len = obj.length;
+			for (let i = 0; i < len; i++) {
+				if(i == len - 1){
+					id += obj[i].value;
+				}else{
+					id += obj[i].value + ',';
+				}
+			}
+		}
+		if(len == 0) return;
+		layer.confirm(`您确定要删除${len == 1 ? '该' : len}该商品？`, {
+			btn: ['取消','确定'] //按钮
+			}, 
+			function(index){
+				layer.close(index);
+			}, 
+			function(){
+				window.location.href = '/shop/goods/dels/id/' + id;
+		});
+	});
+});
+
+// 添加属性选择
+function addTR(obj){
+	let current = $(obj).parent().parent();
+	if($(obj).val() == '+'){
+		let newTR = current.clone();
+		newTR.find('td select option:first').select(true);
+		newTR.find("input[type='number']").val('');
+		newTR.find('td:last input').val('-');
+		current.parent().append(newTR);
+	}else{
+		current.remove();
+	}
+	$("tbody").find("tr:even").css('');
+	$("tbody").find("tr:odd").css("backgroundColor","#eff6fa");
+};
+</script>
+</html>

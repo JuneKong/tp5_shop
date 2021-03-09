@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="__CSS__/base.css" />
+<link rel="stylesheet" href="__CSS__/info-reg.css" />
+<title>商城后台</title>
+</head>
+
+<body>
+<div class="title"><h2>权限编辑</h2></div>
+<form action="" method="post">
+	<div class="main">
+	    <p class="short-input ue-clear">
+			<label>权限名称：</label>
+	        <input type="hidden" name="id" value="{$data.id}" />
+	        <input type="text" name="rule_name" placeholder="权限名称" value="{$data.rule_name}"/>
+		</p>
+		<p class="short-input ue-clear">
+	    	<label>模块名称：</label>
+	        <input type="text" name="module_name" placeholder="模块名称" value="{$data.module_name}"/>
+		</p>
+		<p class="short-input ue-clear">
+	    	<label>控制器名称：</label>
+	        <input type="text" name="controller_name" placeholder="控制器名称" value="{$data.controller_name}"/>
+		</p>
+		<p class="short-input ue-clear">
+	    	<label>方法名称：</label>
+	        <input type="text" name="action_name" placeholder="方法名称" value="{$data.action_name}"/>
+	    </p>
+	    <div class="short-input select ue-clear">
+	    	<label>上级权限：</label>
+	        <div class="select-wrap">
+	        	<select name="parent_id">
+					<option value="0">|--顶级权限</option>
+					{volist name='cate' id='vo'}
+						<option value="{$vo.id}" {eq name="vo.id" value="$data.parent_id"}selected='selected'{/eq} >|{$vo.level|str_repeat='--',###}{$vo.rule_name}</option>
+					{/volist}
+	            </select>
+	        </div>
+	    </div>
+	    <p class="short-input ue-clear">
+			<label>是否显示：</label>
+			<div style="position: relative; left: 110px; top: -24px;">
+	        	<input type="radio" name="is_show" value="1" {eq name="data.is_show" value="1"}checked="checked"{/eq} />是 
+	        	<input type="radio" name="is_show" value="0" {eq name="data.is_show" value="0"}checked="checked"{/eq} />否
+	        </div>
+		</p>
+	</div>
+	<div class="btn ue-clear">
+		<a href="javascript:;" class="confirm">确定</a>
+	    <a href="javascript:;" class="clear">清空内容</a>
+	</div>
+</form>
+</body>
+<script type="text/javascript" src="__JS__/jquery.js"></script>
+<script type="text/javascript" src="__JS__/common.js"></script>
+<script type="text/javascript" src="__JS__/WdatePicker.js"></script>
+<script type="text/javascript">
+$(".select-title").on("click",function(){
+	$(".select-list").toggle();
+	return false;
+});
+$(".select-list").on("click","li",function(){
+	var txt = $(this).text();
+	$(".select-title").find("span").text(txt);
+});
+
+
+showRemind('input[type=text], textarea','placeholder');
+
+// jquery代码
+$(function(){
+	$('.confirm').on('click', () => {
+		$('form').submit();
+	});
+
+	$('.clear').on('click', () => {
+		$('form')[0].reset();
+	})
+});
+</script>
+</html>
